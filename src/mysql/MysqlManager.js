@@ -26,7 +26,9 @@ class MysqlManager {
 
     async insertWaifu({name, code_name}) {
         return await (await this.connection).execute('INSERT INTO `waifu_top` (code_name, name, top, total_entries) VALUES (?, ?, ?, ?)', [code_name, name, 0, 0])
-            .catch(e => console.log(e.message))
+            .catch(e => {
+                return e.message
+            })
     }
 }
 

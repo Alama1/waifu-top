@@ -9,8 +9,7 @@ class newWaifuCommand {
             return 'Ошибка аргументов команды, убедитесь что вы ввели команду по шаблону \'/newWaifu {Полное имя}, {Ключевое имя}\''
         }
         const args = message.split(',')
-        const res = this.telegram.app.mysql.insertWaifu({name: args[0], code_name: args[1].trim()})
-        return 'Success!'
+        return await this.telegram.app.mysql.insertWaifu({name: args[0], code_name: args[1].trim()})
     }
 
     isValidArgs(message) {

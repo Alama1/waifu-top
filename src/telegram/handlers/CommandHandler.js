@@ -22,7 +22,7 @@ class CommandHandler {
         }
 
         const res = await command.onCommand(message)
-        event.reply(res)
+        event.reply(res ?? 'Success!')
     }
 }
 
