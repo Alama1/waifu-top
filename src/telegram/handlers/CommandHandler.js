@@ -21,8 +21,23 @@ class CommandHandler {
             return
         }
 
-        const res = await command.onCommand(message)
-        event.reply(res ?? 'Success!')
+        const res = await command.onCommand(message, event)
+        if (!res) {
+            return
+        }
+        switch(true) {
+            case res.affectedRows === 1:
+                event.reply('Готово!')
+                break
+            case res.includes('Duplicate entry'):
+                event.reply('Вайфу с таким ключевым именем уже есть!')
+                break
+            case typeof res === "string":
+                event.reply(res)
+                break
+            default:
+                event.reply('Unexpected error')
+        }
     }
 }
 

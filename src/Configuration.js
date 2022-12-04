@@ -7,6 +7,7 @@ class Configuration {
         telegram: {
             botToken: process.env.BOT_TOKEN,
             channelId: '-1001526366156',
+            voteDuration: 6000,
         },
         database: {
             host: '74.208.95.168',
@@ -15,11 +16,6 @@ class Configuration {
             database: 'test',
         }
     }
-
-    environmentOverrides = {
-        SERVER_HOST: val => (this.properties.server.host = val),
-    }
-
 }
 
 module.exports = Configuration

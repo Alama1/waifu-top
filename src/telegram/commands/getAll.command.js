@@ -7,8 +7,8 @@ class getAllCommand {
     async onCommand(message) {
         const [rows, cols] = await this.telegram.app.mysql.getEverythingFromMainTable()
         return rows.map((waifu) => {
-            return `Waifu name: ${waifu.name} \n Code name: ${waifu.code_name} \n------------\n`
-        })[0]
+            return `Waifu name: ${waifu.name} \n Code name: ${waifu.code_name}\n Top: ${waifu.top}\n Total votes: ${waifu.total_entries} \n------------\n`
+        }).join('')
     }
 }
 

@@ -20,8 +20,23 @@ class MysqlManager {
         await (await this.connection).execute(sql).catch(e => console.log(e.message))
     }
 
+    async getWaifu(name) {
+        return await (await this.connection).execute('SELECT * FROM `waifu_top` WHERE `code_name` = ?', [name]).catch(e => console.log(e.message))
+    }
+
     async getEverythingFromMainTable() {
         return await (await this.connection).execute('SELECT * FROM `waifu_top`').catch(e => console.log(e.message))
+    }
+
+    async deleteWaifu(name) {
+        return await (await this.connection).execute('DELETE FROM `waifu_top` WHERE `code_name` = ?', [name]).catch(e => console.log(e.message))
+    }
+
+    async getWaifuRealName(name) {
+        return await (await this.connection).execute('SELECT `name` FROM `waifu_top` WHERE code_name=?', [name]).catch(e => console.log(e.message))
+    }
+    async getWaifusForVote(list) {
+        return await (await this.connection).execute('SELECT * FROM `waifu_top` WHERE `code_name` IN (?, ?, ?, ?, ?, ?, ?, ?, ?)', list).catch(e => console.log(e.message))
     }
 
     async insertWaifu({name, code_name}) {
