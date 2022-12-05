@@ -25,7 +25,11 @@ class CommandHandler {
         if (!res) {
             return
         }
+        const pic = res.picture_key || 'AgACAgIAAxkBAAIBn2ONNirQiNBDvEtZow5WfR-Se76IAAI5xTEbB9ZoSP-Gqj2ddSxUAQADAgADbQADKwQ'
         switch(true) {
+            case res.hasOwnProperty('picture_key'):
+                event.replyWithPhoto(pic, { caption: `Name: ${res.name}\nCode name: ${res.code_name}\nTop: ${res.top}\n`})
+                break
             case res.affectedRows === 1:
                 event.reply('Готово!')
                 break

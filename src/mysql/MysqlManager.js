@@ -21,7 +21,7 @@ class MysqlManager {
     }
 
     async getWaifu(name) {
-        return await (await this.connection).execute('SELECT * FROM `waifu_top` WHERE `code_name` = ?', [name]).catch(e => console.log(e.message))
+        return await (await this.connection).execute('SELECT * FROM `waifu_top` WHERE `code_name` = ?', [name])
     }
 
     async getEverythingFromMainTable() {
@@ -30,6 +30,10 @@ class MysqlManager {
 
     async deleteWaifu(name) {
         return await (await this.connection).execute('DELETE FROM `waifu_top` WHERE `code_name` = ?', [name]).catch(e => console.log(e.message))
+    }
+
+    async updateWaifuPic(newLink, name) {
+        return await (await this.connection).execute('UPDATE `waifu_top` SET `picture_key` = ? WHERE `code_name` = ?', [newLink, name]).catch(e => console.log(e.message))
     }
 
     async getWaifuRealName(name) {

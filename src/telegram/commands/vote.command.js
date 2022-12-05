@@ -8,7 +8,7 @@ class voteCommand {
 
     async onCommand(message, event) {
         if (!this.isValidArgs(message)) {
-            return 'Ошибка аргументов команды, убедитесь что вы ввели команду по шаблону \'/vote и 8 ключевых имен через запятую\' \n ' +
+            return 'Ошибка аргументов команды, убедитесь что вы ввели команду по шаблону \'/vote и 8 ключевых имен через запятую\' \n' +
                 'Ключевые имена можно узнать через команду /getAll'
         }
         const args = message.split(',').map((waifu) => waifu.trim())
@@ -80,7 +80,7 @@ class voteCommand {
             return waifu.join(': ')
         })
 
-        event.reply(`Голосование окончено! Вот результаты: \n ${finalRes.join('\n')}`)
+        event.reply(`Голосование окончено! Вот результаты: \n${finalRes.join('\n')}`)
     }
 
     async voteDone () {
