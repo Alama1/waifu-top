@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise')
 const bluebird = require('bluebird');
+const {code} = require("telegraf/format");
 
 class MysqlManager {
     constructor(app) {
@@ -28,6 +29,10 @@ class MysqlManager {
         return await (await this.connection).execute('SELECT * FROM `waifu_top`').catch(e => console.log(e.message))
     }
 
+    async getAllTopNumbers() {
+        return await (await this.connection).execute('SELECT `top` FROM `waifu_top`').catch(e => console.log(e.message))
+    }
+
     async deleteWaifu(name) {
         return await (await this.connection).execute('DELETE FROM `waifu_top` WHERE `code_name` = ?', [name]).catch(e => console.log(e.message))
     }
@@ -43,10 +48,10 @@ class MysqlManager {
         return await (await this.connection).execute('SELECT * FROM `waifu_top` WHERE `code_name` IN (?, ?, ?, ?, ?, ?, ?, ?, ?)', list).catch(e => console.log(e.message))
     }
 
-    async insertWaifu({name, code_name}) {
-        return await (await this.connection).execute('INSERT INTO `waifu_top` (code_name, name, top, total_entries) VALUES (?, ?, ?, ?)', [code_name, name, 0, 0])
+    async insertWaifu({name, code_name, top}) {
+        return await (await this.connection).execute('INSERT INTO `waifu_top` (code_name, name, top) VALUES (?, ?, ?)', [code_name, name, top])
             .catch(e => {
-                return e.message
+                console.error(e)
             })
     }
 }

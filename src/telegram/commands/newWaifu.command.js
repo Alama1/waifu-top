@@ -8,8 +8,12 @@ class newWaifuCommand {
         if (!this.isValidArgs(message)) {
             return 'Ошибка аргументов команды, убедитесь что вы ввели команду по шаблону \'/newWaifu {Полное имя}, {Ключевое имя}\''
         }
-        const args = message.split(',')
-        const [rows, cols] = await this.telegram.app.mysql.insertWaifu({name: args[0], code_name: args[1].trim()})
+        const [name, code_name] = message.split(',')
+        const [tops, someSht] = await this.telegram.app.mysql.getAllTopNumbers()
+        const currentTop = tops.map(waifu => {
+            return waifu.top
+        })
+        const [rows, cols] = await this.telegram.app.mysql.insertWaifu({name: name.trim(), code_name: code_name.trim(), top: Math.max(...currentTop) + 1})
         return rows
     }
 

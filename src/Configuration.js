@@ -7,7 +7,7 @@ class Configuration {
         telegram: {
             botToken: process.env.BOT_TOKEN,
             channelId: '-1001526366156',
-            voteDuration: 6000,
+            voteDuration: 60000,
         },
         database: {
             host: '74.208.95.168',
