@@ -18,6 +18,7 @@ class CommandHandler {
 
         let command = this.commands.get(commandName)
         if (!command) {
+            console.log('No')
             return
         }
 

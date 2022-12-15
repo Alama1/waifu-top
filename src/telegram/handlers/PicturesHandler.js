@@ -6,7 +6,7 @@ class PicturesHandler {
     async onMessage(event) {
         const files = event.update.message.photo
         if (!event.update.message.hasOwnProperty('caption')) {
-            event.reply('Specify waifu code_name with photo')
+            event.reply('Укажите ключевое имя вайфу вместе с фото')
             return
         }
         const waifu_id = event.update.message.caption

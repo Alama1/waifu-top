@@ -21,17 +21,18 @@ class ButtonsHandler {
     }
 
     async showWaifuCard(event) {
-        const [waifu_id, allOther] = event.update.callback_query.data.split('_')
-        const [rows, cols] = await this.telegram.app.mysql.getWaifu(waifu_id)
-            const waifu = rows[0]
+        const waifu_id = event.update.callback_query.data.split('_')
+        waifu_id.pop()
+        const [rows, cols] = await this.telegram.app.mysql.getWaifu(waifu_id.join('_'))
+        const waifu = rows[0]
         const pic = waifu.picture_key ? waifu.picture_key : 'AgACAgIAAxkBAAIBn2ONNirQiNBDvEtZow5WfR-Se76IAAI5xTEbB9ZoSP-Gqj2ddSxUAQADAgADbQADKwQ'
         const card = await event.sendPhoto(pic, {
                 caption: waifu.name,
                 parse_mode: 'MarkdownV2',
                 reply_markup: {
                     inline_keyboard: [
-                        [ { text: 'Голосовать/отменить голос', callback_data: rows[0].code_name} ],
-                        ]
+                        [ { text: 'Голосовать/отменить голос', callback_data: rows[0].code_name + `_${rows[0].top}`} ],
+                    ]
                 }
             }
         )
@@ -39,13 +40,16 @@ class ButtonsHandler {
             event.tg.deleteMessage(card.chat.id, card.message_id)
         }, 30000)
 
-        await event.answerCbQuery(waifu.name);
     }
 
     async waifuVote(event) {
         const waifu_id = event.update.callback_query.data
         if (!this.telegram.hasVoteStarted) {
             await event.answerCbQuery('Голосование еще не началось!');
+            return
+        }
+        if (!this.telegram.voteList.hasOwnProperty(waifu_id)) {
+            await event.answerCbQuery('Такой вайфу в голосовании нет')
             return
         }
         const fromUser = event.update.callback_query.from.id
@@ -57,7 +61,6 @@ class ButtonsHandler {
             return
         }
         this.telegram.voteList[waifu_id].push(fromUser)
-        console.log(event.update.callback_query.message.reply_markup.inline_keyboard[0])
 
         await event.answerCbQuery('Ваш голос засчитан!');
     }
