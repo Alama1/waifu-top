@@ -17,7 +17,7 @@ class ButtonsHandler {
                         this.deleteWaifuCard(event)
                         break
                     default:
-                        this.waifuVote(event)
+                        this.processVote(event)
                         break
                 }
                 break
@@ -58,7 +58,8 @@ class ButtonsHandler {
         await event.tg.deleteMessage(chatID, messageId)
     }
 
-    async waifuVote(event) {
+    async processVote(event) {
+        let alreadyVotedReply
         const waifu_id = event.update.callback_query.data
         if (!this.telegram.hasVoteStarted) {
             await event.answerCbQuery('Голосование еще не началось!');
@@ -73,10 +74,30 @@ class ButtonsHandler {
             this.telegram.voteList[waifu_id] = this.telegram.voteList[waifu_id].filter(function(value){
                 return value !== fromUser;
             })
+
+            const userId = event.update.callback_query.message.chat.id
+            const waifuRealName = event.update.callback_query.message.caption
+            if (this.telegram.usersAndWaifuTheyVoted.hasOwnProperty(userId)) {
+                this.telegram.usersAndWaifuTheyVoted[userId] = this.telegram.usersAndWaifuTheyVoted[userId].filter(function (value) {
+                    return value !== waifuRealName
+                })
+                alreadyVotedReply = await event.reply(`Вы проголосовали за: ${this.telegram.usersAndWaifuTheyVoted[userId].join(', ')}`)
+            }
+            setTimeout(() => { event.tg.deleteMessage(alreadyVotedReply.chat.id, alreadyVotedReply.message_id)}, 5000)
             await event.answerCbQuery('Ваш голос был убран!');
             return
         }
         this.telegram.voteList[waifu_id].push(fromUser)
+        const userId = event.update.callback_query.message.chat.id
+        const waifuRealName = event.update.callback_query.message.caption
+        if (!this.telegram.usersAndWaifuTheyVoted.hasOwnProperty(userId)) {
+            this.telegram.usersAndWaifuTheyVoted[userId] = [ waifuRealName ]
+            alreadyVotedReply = await event.reply(`Вы проголосовали за: ${this.telegram.usersAndWaifuTheyVoted[userId].join(' ')}`)
+        } else {
+            this.telegram.usersAndWaifuTheyVoted[userId].push(waifuRealName)
+            alreadyVotedReply = await event.reply(`Вы проголосовали за: ${this.telegram.usersAndWaifuTheyVoted[userId].join(', ')}`)
+        }
+        setTimeout(() => { event.tg.deleteMessage(alreadyVotedReply.chat.id, alreadyVotedReply.message_id)}, 5000)
 
         await event.answerCbQuery('Ваш голос засчитан!');
     }

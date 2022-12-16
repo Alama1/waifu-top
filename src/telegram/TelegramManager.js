@@ -12,6 +12,7 @@ class TelegramManager {
         this.bot = new Telegraf(this.app.config.properties.telegram.botToken);
         this.bot.launch()
         this.voteList = {}
+        this.usersAndWaifuTheyVoted = {}
         this.hasVoteStarted = false
     }
 
