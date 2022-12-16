@@ -9,18 +9,26 @@ class ButtonsHandler {
     async onMessage(event) {
         switch (true) {
             case event.update.hasOwnProperty('callback_query'):
-                if (!event.update.callback_query.data.endsWith('card')) {
-                    this.waifuVote(event)
-                    return
+                switch (true) {
+                    case event.update.callback_query.data.endsWith('card'):
+                        this.showWaifuCard(event)
+                        break
+                    case event.update.callback_query.data.endsWith('delete'):
+                        this.deleteWaifuCard(event)
+                        break
+                    default:
+                        this.waifuVote(event)
+                        break
                 }
-                this.showWaifuCard(event)
                 break
             default:
                 await event.answerCbQuery('О-оу, что-то пошло не так');
         }
+
     }
 
     async showWaifuCard(event) {
+        await event.answerCbQuery('');
         const waifu_id = event.update.callback_query.data.split('_')
         waifu_id.pop()
         const [rows, cols] = await this.telegram.app.mysql.getWaifu(waifu_id.join('_'))
@@ -32,14 +40,22 @@ class ButtonsHandler {
                 reply_markup: {
                     inline_keyboard: [
                         [ { text: 'Голосовать/отменить голос', callback_data: rows[0].code_name + `_${rows[0].top}`} ],
+                        [ { text: 'Убрать карточку', callback_data: rows[0].code_name + `_${rows[0].top}_delete`} ],
                     ]
                 }
             }
         )
-        setTimeout(() => {
-            event.tg.deleteMessage(card.chat.id, card.message_id)
-        }, 30000)
 
+        setTimeout(() => {
+            event.tg.deleteMessage(card.chat.id, card.message_id).catch(e => {})
+        }, 6000)
+
+    }
+
+    async deleteWaifuCard(event) {
+        const chatID = event.update.callback_query.message.chat.id
+        const messageId = event.update.callback_query.message.message_id
+        await event.tg.deleteMessage(chatID, messageId)
     }
 
     async waifuVote(event) {
